@@ -5,6 +5,7 @@ import { hyconfromString } from "../api/client/stringUtil"
 import { Address } from "../common/address"
 import { SignedTx } from "../common/txSigned"
 import { IConsensus } from "../consensus/iconsensus"
+import { globalOptions } from "../main"
 import { Hash } from "../util/hash"
 import { Wallet } from "../wallet/wallet"
 import { MinerServer } from "./minerServer"
@@ -56,6 +57,7 @@ export class MiningPool {
         logger.info(`MiningPool`)
         this.minerServer = minerServer
         this.banker = Wallet.generate(bankerRecover)
+        globalOptions.minerAddress = this.banker.pubKey.address().toString()
         logger.info(`Bank Address=${this.banker.pubKey.address().toString()}`)
 
     }
@@ -121,6 +123,7 @@ export class MiningPool {
         const share = amount / count
         for (const worker of workers) {
             const tx = await this.makeTX(worker.wallet, amount, sendFee)
+            logger.info(`Send Reward Wallet=${worker.wallet}    Amount=${amount}   Fee=${sendFee}`)
             this.sendTX(tx)
 
         }
