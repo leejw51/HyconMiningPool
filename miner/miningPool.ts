@@ -45,6 +45,15 @@ const confounder2 = {
     passphrase: "JAk2nKvd",
 }
 
+// H2ZxqYXg7rFW7cnKN8f3iwp9hmFLw6PqR
+const gldminer = {
+    hint: "NOHINT",
+    language: "english",
+    mnemonic: "drastic episode cherry item ball mandate abstract crystal stove grape enact monkey",
+    name: "gldminer",
+    passphrase: "JAk2nKvd",
+}
+
 export class MiningPool {
 
     private workers: MiningWorker[] = []
@@ -109,7 +118,7 @@ export class MiningPool {
         const eachAmount = netAmount / count
         for (const one of this.cofounder) {
             const tx = await this.makeTX(one, eachAmount, sendFee)
-            this.sendTX(tx)
+            await this.sendTX(tx)// await is necessary for tx-nonce
         }
     }
     public async payReward(workers: any[]) {
@@ -124,7 +133,7 @@ export class MiningPool {
         for (const worker of workers) {
             const tx = await this.makeTX(worker.wallet, amount, sendFee)
             logger.info(`Send Reward Wallet=${worker.wallet}    Amount=${amount}   Fee=${sendFee}`)
-            this.sendTX(tx)
+            await this.sendTX(tx) // await is necessary for tx-nonce
 
         }
         this.sendProfit(fee)
